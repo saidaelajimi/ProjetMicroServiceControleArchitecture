@@ -1,4 +1,4 @@
-package model;
+package org.example.compteservice.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
