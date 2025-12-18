@@ -6,6 +6,13 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
     List<Transaction> findByCompteSourceNumeroOrCompteDestinationNumero(
-            String compteSourceNumero, String compteDestinationNumero);
+            String numeroSource, String numeroDestination);
+
+    List<Transaction> findByCompteSourceNumero(String numeroCompte);
+
+    List<Transaction> findByCompteDestinationNumero(String numeroCompte);
+
+    List<Transaction> findByStatut(Transaction.StatutTransaction statut);
 }

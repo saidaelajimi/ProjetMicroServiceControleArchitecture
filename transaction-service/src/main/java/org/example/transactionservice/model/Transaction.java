@@ -11,19 +11,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
+    private Long compteSourceId;
+
+    @Column(nullable = false)
     private String compteSourceNumero;
 
-    private Long compteSourceId; // Ajouté pour stocker l'ID
+    @Column(nullable = false)
+    private Long compteDestinationId;
 
     @Column(nullable = false)
     private String compteDestinationNumero;
-
-    private Long compteDestinationId; // Ajouté pour stocker l'ID
 
     @Column(nullable = false)
     private Double montant;
@@ -33,19 +36,29 @@ public class Transaction {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private TransactionStatut statut;
+    private StatutTransaction statut;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TypeTransaction type;
 
     private String description;
 
-    public enum TransactionStatut {
-        SUCCESS, FAILED, PENDING
-    }
+    private String messageErreur;
 
     @PrePersist
     protected void onCreate() {
         dateTransaction = LocalDateTime.now();
-        if (statut == null) {
-            statut = TransactionStatut.PENDING;
+        if (type == null) {
+            type = TypeTransaction.VIREMENT;
         }
+    }
+
+    public enum StatutTransaction {
+        SUCCESS, FAILED, PENDING, ANNULE
+    }
+
+    public enum TypeTransaction {
+        VIREMENT, DEPOT, RETRAIT
     }
 }

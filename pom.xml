@@ -20,6 +20,7 @@
         <module>compte-service</module>
         <module>transaction-service</module>
         <module>reporting-service</module>
+
     </modules>
 
     <properties>

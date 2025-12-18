@@ -35,4 +35,18 @@ public class GatewayConfig {
 
                 .build();
     }
+
+    @Bean
+    public org.springframework.web.cors.reactive.CorsWebFilter corsWebFilter() {
+        org.springframework.web.cors.CorsConfiguration corsConfig = new org.springframework.web.cors.CorsConfiguration();
+        corsConfig.setAllowCredentials(true);
+        corsConfig.addAllowedOrigin("http://localhost:3000");
+        corsConfig.addAllowedHeader("*");
+        corsConfig.addAllowedMethod("*");
+
+        org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+
+        return new org.springframework.web.cors.reactive.CorsWebFilter(source);
+    }
 }

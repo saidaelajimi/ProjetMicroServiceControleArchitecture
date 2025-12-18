@@ -5,6 +5,10 @@ spring:
   application:
     name: reporting-service
 
+  # Configuration WebFlux
+  webflux:
+    base-path: /
+
 eureka:
   client:
     service-url:
@@ -13,6 +17,14 @@ eureka:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${random.int}
 
-exchange:
-  api:
-    url: https://api.exchangerate-api.com/v4/latest/USD
+# Configuration WebClient
+webclient:
+  exchange-api:
+    base-url: https://api.exchangerate-api.com
+    timeout: 5000
+
+logging:
+  level:
+    com.banking.reporting: DEBUG
+    reactor.netty: INFO
+    org.springframework.web.reactive: DEBUG

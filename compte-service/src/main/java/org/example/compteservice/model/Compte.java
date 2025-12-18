@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Compte {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,10 +26,18 @@ public class Compte {
     private Double solde = 0.0;
 
     @Column(nullable = false)
+    private String typeCompte; // COURANT, EPARGNE
+
+    @Column(nullable = false)
     private LocalDateTime dateCreation;
 
     @PrePersist
     protected void onCreate() {
         dateCreation = LocalDateTime.now();
+        if (numeroCompte == null) {
+            // Génération automatique du numéro de compte
+            numeroCompte = "FR76" + String.format("%011d",
+                    (long)(Math.random() * 100000000000L));
+        }
     }
 }
