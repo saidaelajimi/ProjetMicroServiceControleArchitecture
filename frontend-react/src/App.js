@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Transfert from './pages/Transfert';
 import TauxChange from './pages/TauxChange';
-import Comptes from './pages/Comptes'; // Keeping existing if needed
+import Comptes from './pages/Comptes';
 import CreateAccount from './pages/CreateAccount';
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* Protected Routes wrapped in Layout */}
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<Navigate to="/login" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="create-account" element={<CreateAccount />} />

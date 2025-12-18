@@ -8,19 +8,26 @@ import org.example.apigateway.security.JwtUtil;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
     public Mono<ResponseEntity<AuthResponse>> login(@RequestBody LoginRequest request) {
-        // Ici, normalement on vérifierait dans une base de données
-        // Pour la démo, on accepte tout login
-
-        String token = jwtUtil.generateToken(request.getUsername(), "USER");
-
-        return Mono.just(ResponseEntity.ok(new AuthResponse(token, request.getUsername())));
+        // Hardcoded users for demo (in production, check database)
+        if (validateCredentials(request.getUsername(), request.getPassword())) {
+            String role = request.getUsername().equals("admin") ? "ADMIN" : "USER";
+            String token = jwtUtil.generateToken(request.getUsername(), role);
+            return Mono.just(ResponseEntity.ok(new AuthResponse(token, request.getUsername())));
+        }
+        
+        return Mono.just(ResponseEntity.status(401).build());
+    }
+    
+    private boolean validateCredentials(String username, String password) {
+        // Demo users: admin/admin123 and user/user123
+        return (username.equals("admin") && password.equals("admin123")) ||
+               (username.equals("user") && password.equals("user123"));
     }
 
     @PostMapping("/register")

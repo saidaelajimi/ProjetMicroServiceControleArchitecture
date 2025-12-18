@@ -1,7 +1,17 @@
 import React from 'react';
-import { Bell, User } from 'lucide-react';
+import { Bell, User, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const navigate = useNavigate();
+    const username = localStorage.getItem('username') || 'Utilisateur';
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        navigate('/login');
+    };
+
     return (
         <header style={{
             height: '70px',
@@ -22,7 +32,7 @@ const Navbar = () => {
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <div style={{ textAlign: 'right' }}>
-                        <p style={{ fontWeight: 600, fontSize: '0.875rem' }}>Alice Dupont</p>
+                        <p style={{ fontWeight: 600, fontSize: '0.875rem' }}>{username}</p>
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Client Premium</p>
                     </div>
                     <div style={{
@@ -38,6 +48,15 @@ const Navbar = () => {
                         <User size={20} color="var(--primary)" />
                     </div>
                 </div>
+
+                <button
+                    className="btn btn-secondary"
+                    onClick={handleLogout}
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                    <LogOut size={18} />
+                    Déconnexion
+                </button>
             </div>
         </header>
     );

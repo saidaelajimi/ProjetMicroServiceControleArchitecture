@@ -1,14 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Coins } from 'lucide-react';
+import { Coins, AlertCircle } from 'lucide-react';
+import api from '../services/api';
 
 const Login = () => {
     const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        username: '',
+        password: ''
+    });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simulate login
-        navigate('/dashboard');
+        setError('');
+        setLoading(true);
+
+        try {
+            const response = await api.post('http://localhost:8080/auth/login', {
+                username: formData.username,
+                password: formData.password
+            });
+
+            // Store JWT token in localStorage
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('username', response.data.username);
+
+            // Redirect to dashboard
+            navigate('/dashboard');
+        } catch (err) {
+            console.error('Login error:', err);
+            if (err.response?.status === 401) {
+                setError('Identifiants incorrects');
+            } else {
+                setError('Erreur de connexion au serveur');
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -34,14 +64,24 @@ const Login = () => {
                     <p style={{ color: 'var(--text-muted)' }}>Accédez à votre espace bancaire</p>
                 </div>
 
-                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {error && (
+                    <div style={{ padding: '1rem', background: '#fef2f2', border: '1px solid #fee2e2', borderRadius: '0.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--danger)' }}>
+                        <AlertCircle size={20} />
+                        <span>{error}</span>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div>
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
-                            Identifiant client
+                            Nom d'utilisateur
                         </label>
                         <input
                             type="text"
-                            defaultValue="76123456"
+                            required
+                            value={formData.username}
+                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                            placeholder="admin ou user"
                             style={{
                                 width: '100%',
                                 padding: '0.75rem',
@@ -58,7 +98,10 @@ const Login = () => {
                         </label>
                         <input
                             type="password"
-                            defaultValue="password"
+                            required
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            placeholder="admin123 ou user123"
                             style={{
                                 width: '100%',
                                 padding: '0.75rem',
@@ -69,13 +112,13 @@ const Login = () => {
                         />
                     </div>
 
-                    <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem' }}>
-                        Se connecter
+                    <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem' }} disabled={loading}>
+                        {loading ? 'Connexion...' : 'Se connecter'}
                     </button>
                 </form>
 
                 <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    Pas encore client ? <a href="#" style={{ color: 'var(--secondary)', textDecoration: 'none', fontWeight: 500 }}>Ouvrir un compte</a>
+                    <strong>Démo:</strong> admin/admin123 ou user/user123
                 </p>
             </div>
         </div>

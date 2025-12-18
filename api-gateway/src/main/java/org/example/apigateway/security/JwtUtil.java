@@ -13,7 +13,10 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    // Fixed secret key (base64 encoded) - in production, use environment variable
+    private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(
+        "MySecretKeyForJWTTokenGenerationAndValidation12345678".getBytes()
+    );
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 heures
 
     public String extractUsername(String token) {
